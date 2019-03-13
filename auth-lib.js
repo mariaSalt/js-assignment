@@ -1,26 +1,25 @@
 var allUsers = [
-	{nickname: "admin", password: "1234", groups: ["admin", "manager", "basic"]},
-	{nickname: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
-	{nickname: "patriot007", password: "russiaFTW", groups: ["basic"]}
+	{username: "admin", password: "1234", groups: ["admin", "manager", "basic"]},
+	{username: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
+	{username: "patriot007", password: "russiaFTW", groups: ["basic"]}
 ];
 
+
+var allRights = ["manage content", "play games", "delete users", "view site"];
+
 var allGroups = {
-    "admin": [rights[2]],
-    "manager": [rights[0]],
-    "basic": [rights[1], rights[3]]
+    "admin": [allRights[2]],
+    "manager": [allRights[0]],
+    "basic": [akkRights[1], allRights[3]]
 }
 
-function createUser() {
+function createUser(username, pass) {
     var newUser;
-    // Написать проверку
-    newUser.username=prompt('username','default');
-    newUser.password=prompt('password','default');
+
+    newUser.username=username;
+    newUser.password=pass;
     newUser.groups=['basic'];
-    // allUsers.push{
-    //     nickname: username,
-    //         password: password,
-    //     groups: ['basic']
-    // }
+
     allUsers.push(newUser);
 
     return newUser;
@@ -38,24 +37,39 @@ function createGroup() {};
 
 function deleteGroup() {};
 
-function groups() {};
-
-function addUserToGroup() {};
-
-function userGroups() {
-    var username=prompt('username','default');
-    return allUsers.find(x=>x.nickname===username).groups;
+function groups() {
+    return allGroups;
 };
 
-function removeUserFromGroup() {};
+function addUserToGroup(user, newGroup) {
+    var index = allUsers.findIndex(x=>x.username===user);
+    allUsers[index].groups.push(newGroup)
+};
 
-function createRight() {};
+function userGroups(user) {
 
-function deleteRight() {};
+    return allUsers.find(x=>x.username===user).groups;
+};
+
+function removeUserFromGroup(user, group) {
+    var index = allUsers.findIndex(x=>x.username===user);
+    allUsers[index].groups.splice(allUsers[index].groups.indexOf(group),1);
+};
+
+function createRight() {
+
+};
+
+function deleteRight(right) {
+    var index=allRights.indexOf(right);
+    allRights.splice(index, 1)  ;
+};
 
 function groupRights() {};
 
-function rights() {};
+function rights() {
+    return allRights;
+};
 
 function addRightToGroup() {};
 
