@@ -1,68 +1,88 @@
-var allUsers = [
+let allUsers = [
 	{username: "admin", password: "1234", groups: ["admin", "manager", "basic"]},
 	{username: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
 	{username: "patriot007", password: "russiaFTW", groups: ["basic"]}
 ];
 
 
-var allRights = ["manage content", "play games", "delete users", "view site"];
+let allRights = ["manage content", "play games", "delete users", "view site"];
 
-var allGroups = {
+let allGroups = {
     "admin": [allRights[2]],
     "manager": [allRights[0]],
-    "basic": [akkRights[1], allRights[3]]
+    "basic": [allRights[1], allRights[3]]
+};
+
+function UserException(message){
+    return message;
 }
 
 function createUser(username, pass) {
-    var newUser;
-
-    newUser.username=username;
-    newUser.password=pass;
-    newUser.groups=['basic'];
-
+    let newUser = {};
+    newUser.username = username;
+    newUser.password = pass;
+    newUser.groups = [];
     allUsers.push(newUser);
-
-    return newUser;
+    return newUser.username;
 };
 
-function deleteUser() {
-
+function deleteUser(user) {
+  let index = allUsers.findIndex(x=>x.username===user);
+  if(index !== -1){
+      allUsers.splice(index,1);
+  }else{
+      throw new UserException("Ошибка! Пользователь не найден, или был удален ранее"); // это действие бросает исключение!
+  }
+  return undefined;
 };
 
 function users() {
     return allUsers;
 };
 
-function createGroup() {};
+function createGroup(group) {
+    //allGroups - это объект, поэтому с ним нужно работать соответсвенно
+    allGroups[group]=allRights[2];
+    return group;
+};
 
-function deleteGroup() {};
+function deleteGroup() {
+};
 
 function groups() {
-    return allGroups;
+    //allGroups - это объект, поэтому с ним нужно работать соответсвенно
+    //Переберем все свойства с помощью цикла for...in  и добавим их в массив
+    let arrGroups = [];
+    for (let group in allGroups){
+        arrGroups.push(group);
+    }
+    return arrGroups;
 };
 
 function addUserToGroup(user, newGroup) {
-    var index = allUsers.findIndex(x=>x.username===user);
-    allUsers[index].groups.push(newGroup)
-};
+    let index = allUsers.findIndex(x=>x.username===user);
+    allUsers[index].groups.push(newGroup);
+    return undefined;
+}
 
 function userGroups(user) {
-
-    return allUsers.find(x=>x.username===user).groups;
+    let index = allUsers.findIndex(x=>x.username===user);
+    return allUsers[index].groups;
 };
 
 function removeUserFromGroup(user, group) {
-    var index = allUsers.findIndex(x=>x.username===user);
+    let index = allUsers.findIndex(x=>x.username===user);
     allUsers[index].groups.splice(allUsers[index].groups.indexOf(group),1);
 };
 
-function createRight() {
-
+function createRight(newRight) {
+    allRights.push(newRight);
 };
 
 function deleteRight(right) {
-    var index=allRights.indexOf(right);
-    allRights.splice(index, 1)  ;
+    let index=allRights.indexOf(right);
+    allRights.splice(index, 1);
+    return allRights.indexOf(right);
 };
 
 function groupRights() {};
@@ -71,7 +91,10 @@ function rights() {
     return allRights;
 };
 
-function addRightToGroup() {};
+function addRightToGroup(right,group) {
+    allGroups[group].push(right);
+    return undefined;
+};
 
 function removeRightFromGroup() {};
 
