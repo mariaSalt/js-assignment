@@ -65,65 +65,65 @@ var allGroups = {
 <br><br>
 
 
-`function users(): Array<Any>`
+1)`function users(): Array<Any>`
 
 Возвращает массив всех пользователей. 
 <br><br>
 
-`function createUser(username: String, password: String): Any`
+2)`function createUser(username: String, password: String): Any`
 
 Создает нового пользователя с указанным логином `username` и паролем `password`, возвращает созданного пользователя. <br><br>
 
-`function deleteUser(user: Any): undefined`
+3)`function deleteUser(user: Any): undefined`
 
 Удаляет пользователя `user` <br><br>
 
 
-`function userGroups(user: Any): Array<Any>`
+4)`function userGroups(user: Any): Array<Any>`
 
 Возвращает массив групп, к которым принадлежит пользователь `user` <br><br>
 
-`function addUserToGroup(user: Any, group: Any): undefined`
+5)`function addUserToGroup(user: Any, group: Any): undefined`
 
 Добавляет пользователя `user` в группу `group` <br><br>
 
-`function removeUserFromGroup(user: Any, group: Any): undefined`
+6)`function removeUserFromGroup(user: Any, group: Any): undefined`
 
 Удаляет пользователя `user` из группы `group`. Должна бросить исключение, если пользователя `user` нет в группе `group` <br><br>
 
-`function rights(): Array<Any>`
+7)`function rights(): Array<Any>`
 
 Возвращает массив прав <br><br>
 
-`function createRight(): Any`
+8)`function createRight(): Any`
 
 Создает новое право и возвращает его <br><br>
 
-`function deleteRight(right: Any): undefined`
+9)`function deleteRight(right: Any): undefined`
 
 Удаляет право `right` <br><br>
 
-`function addRightToGroup(right: Any, group: Any) : undefined`
+10)`function addRightToGroup(right: Any, group: Any) : undefined`
 
 Добавляет право `right` к группе `group` <br><br>
 
-`function removeRightFromGroup(right: Any, group: Any) : undefined`
+11)`function removeRightFromGroup(right: Any, group: Any) : undefined`
 
 Удаляет право `right` из группы `group`. Должна бросить исключение, если права `right` нет в группе `group` <br><br>
 
-`function groups(): Array<Any>`
+12)`function groups(): Array<Any>`
 
 Возвращает массив групп <br><br>
 
-`function createGroup(): Any`
+13)`function createGroup(): Any`
 
 Создает новую группу и возвращает её. <br><br>
 
-`function deleteGroup(group: Any): undefined`
+14)`function deleteGroup(group: Any): undefined`
 
 Удаляет группу `group` <br><br>
 
-`function groupRights(group: Any): Array<Any>`
+15)`function groupRights(group: Any): Array<Any>`
 
 Возвращает массив прав, которые принадлежат группе `group` <br><br>
 
