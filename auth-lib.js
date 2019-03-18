@@ -1,7 +1,7 @@
 let allUsers = [
 	{username: "admin", password: "1234", groups: ["admin", "manager", "basic"]},
-	// {username: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
-	// {username: "patriot007", password: "russiaFTW", groups: ["basic"]}
+	{username: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
+	{username: "patriot007", password: "russiaFTW", groups: ["basic"]}
 ];
 
 
@@ -13,6 +13,7 @@ let allGroups = {
     "basic": [allRights[1], allRights[3]]
 };
 
+let session = {};
 
 function createUser(username, password) {
 
@@ -40,15 +41,22 @@ function deleteUser(user) {
 
 function users() {
     //let usernames=allUsers.map(function (user) {
-       // return user.username;
+       // return user.username;grgy5x47x3MyCYRr
     //});
     return allUsers;
 }
 
 function createGroup() {
-    let newGroup="newGroup";
-    allGroups[newGroup]=[allRights[3]]; //какое?
-    return newGroup;
+    let text = "";
+    do{
+        // let possible="jdgzrjgozrjgorgrpgzJKOLK00";
+        let possible="abcdefghijklmnopqrstuvwzyxABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for(let i=0; i<5; i++)
+            text+=possible.charAt(Math.floor(Math.random()*possible.length));
+    } while(text in allGroups);
+    allGroups[text]=[];
+   // allGroups[newGroup]=[allRights[3]]; //какое?
+    return text;
 };
 
 function deleteGroup(group) {
@@ -94,11 +102,21 @@ function addUserToGroup(user, newGroup) {
 
 }
 
-function userGroups(user) {
+function userGroups(user)
+{
     // var index = allUsers.findIndex(x=>x.username===user);
     // console.log(user);
-    return user.groups;
-};
+    let userGroup = user.groups; //получили массив групп
+
+    for (let i=0; i<userGroup.length; i++) {
+        if (!(userGroup[i] in allGroups))
+        {
+        userGroup=userGroup.splice(i, 1);
+        }
+    }
+        return user.groups;
+
+}    ;
 
 function removeUserFromGroup(user, group) {
     if ((typeof user === "object") && (typeof group=== "string"))
@@ -116,7 +134,7 @@ else
             }
 
         }else{
-            throw new Error ("error! что то удаленное");
+            throw new Error ("error! что то удаленное ");
         }
     }
     else {
@@ -125,10 +143,17 @@ else
 }
 
 function createRight() {
-
-    allRights.push("read");
-   let indexRight=allRights.indexOf("read")
+    let text = "";
+    do{
+        // let possible="jdgzrjgozrjgorgrpgzJKOLK00";
+        let possible="abcdefghijklmnopqrstuvwzyxABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for(let i=0; i<5; i++)
+            text+=possible.charAt(Math.floor(Math.random()*possible.length));
+    } while(allRights.includes(text))
+    allRights.push(text);
+    let indexRight=allRights.indexOf(text);
     return allRights[indexRight];
+
 };
 
 function deleteRight(right) {
@@ -136,10 +161,21 @@ function deleteRight(right) {
     if (typeof right=== "string"){
     let index=allRights.indexOf(right);
     if (index !== -1)
-        {console.log(right);
+        {
+           // console.log(right);
         allRights.splice(index,1);
+        for (let group in allGroups)
+        {
+            let indexRight = allGroups[group].indexOf(right)
+if (indexRight!==-1)
+{
+    allGroups[group].splice(indexRight, 1);
+}
+        }
         //пробежать по всем группам и поудалять право??????? этого что ли не хватает?
         }
+
+
     else
     {
         throw new Error("Ошибка! что то удаленное")
@@ -151,10 +187,11 @@ function deleteRight(right) {
     return undefined;
 };
 
-function groupRights(group) {
+function groupRights(group)
+{
     // console.log(allGroups[group]);
 
-    return allGroups[group];
+    return   allGroups[group];
 };
 
 function rights() {
@@ -213,13 +250,61 @@ function removeRightFromGroup(right,group) {
 
 };
 
-function login(username, password) {};
+function login(username, password) {
+    let index = allUsers.findIndex(x=>x.username===username);
+    if(index !== -1)
+    {
+        if(allUsers[index].password===password)
+        {
+            if (session!==allUsers[index])
+            {
+                session = allUsers[index];
+                return true;allRights.indexOf(right);
+            }
+        }
+    }
+    return false;
+};
 
-function currentUser() {};
+function currentUser() {
+    for(let key in session)
+    {
+        return session;
+    }
 
-function logout() {};
+        return undefined;
+};
 
-function isAuthorized(user, right) {};
+function logout() {
+    session={};
+};
 
+function isAuthorized(user, right)
+{if (!((typeof user === "object") && (typeof right=== "string")))
+{
+    throw new Error ("error! плохой аргумент");
+}
+let indexRight=allRights.indexOf(right);
 
-//let index=allGroups[group].indexOf(right);
+let userIndex=  allUsers.indexOf(user);
+    if ((indexRight === -1)||(userIndex===-1))
+    {
+        throw new Error("Ошибка! что то удаленное");
+    }
+    let userGroup = user.groups; //получили массив групп
+
+    for (let i=0; i<userGroup.length; i++)
+    {
+        if (!(userGroup[i] in allGroups))
+        {
+            return false;
+        }
+          let arrRightUser=allGroups[userGroup[i]]; //получили массив прав от i-ой группы пользователя
+          if (arrRightUser.indexOf(right)!==-1)
+          {
+               return true;
+          }
+
+    }
+    return false;
+};
