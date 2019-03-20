@@ -1,19 +1,26 @@
 let allUsers = [
 	{username: "admin", password: "1234", groups: ["admin", "manager", "basic"]},
 	{username: "sobakajozhec", password: "ekh228", groups: ["basic", "manager"]},
-	{username: "patriot007", password: "russiaFTW", groups: ["basic"]}
+	{username: "patriot007", password: "russiaFTW", groups: ["basic"]},
+    {username: "guest", password: "0000", groups: ["guest"]}
 ];
 
 
-let allRights = ["manage content", "play games", "delete users", "view site"];
+let allRights = ["manage content", "play games", "delete users", "view site", "minimum rights"];
 
 let allGroups = {
     "admin": [allRights[2]],
     "manager": [allRights[0]],
-    "basic": [allRights[1], allRights[3]]
-};
+    "basic": [allRights[1], allRights[3]],
+    "guest": [allRights [4]]
+    };
+
+let arrListeners = [];
+
 
 let session = {};
+
+let currentSession = {};
 
 function createUser(username, password) {
 
@@ -251,6 +258,12 @@ function removeRightFromGroup(right,group) {
 };
 
 function login(username, password) {
+
+    //if (username === "guest")     //guest entrance
+    //{
+    //    allGroups["guest"]=[allRights[1], allRights[3]];
+    //    session= {username: "guest", password: "0000", groups: ["guest"]};}
+
     let index = allUsers.findIndex(x=>x.username===username);
     if(index !== -1)
     {
@@ -259,7 +272,7 @@ function login(username, password) {
             if (session!==allUsers[index])
             {
                 session = allUsers[index];
-                return true;allRights.indexOf(right);
+                return true;
             }
         }
     }
@@ -276,7 +289,17 @@ function currentUser() {
 };
 
 function logout() {
-    session={};
+    if (currentSession.hasOwnProperty("username"))
+    {
+        session = {};
+    }
+    else
+    {
+        session=currentSession;
+        currentSession={};
+    }
+
+
 };
 
 function isAuthorized(user, right)
@@ -308,3 +331,59 @@ let userIndex=  allUsers.indexOf(user);
     }
     return false;
 };
+
+function loginAs(user)
+{//состоит ли текущий пользователь в группе админ
+    let arrGroup=session.groups;
+    let index=arrGroup.indexOf("admin");
+
+    if (index===-1)
+    {throw new Error ("недостаточно прав");}
+
+
+    currentSession = session;
+    session=user;
+
+    return undefined;
+}
+
+
+function securityWrapper(action, right)
+{
+    if (!(typeof right=== "string"))
+    {
+        throw new Error ("error! плохой аргумент");
+    }
+    let indexRight=allRights.indexOf(right);
+
+    if (indexRight === -1)
+    {
+        throw new Error ("error. удаленное право");
+    }
+
+if (!(session.hasOwnProperty("username")))
+{
+    throw new Error('не пройдена аутентификация')
+}
+
+    for (let i=0; i<session.groups.length; i++)
+    {
+        let arrRightUser=allGroups[session.groups[i]]; //получили массив прав от i-ой группы пользователя
+        if (arrRightUser.indexOf(right)!==-1)
+        {
+        //выводим все функции из списка наблюдателей
+            arrListeners.forEach(function (element) {
+                element(session, action);
+            });
+
+            return action;
+        }
+    }
+    throw new Error ("недостаточно прав");
+    
+}
+function addActionListener(listener) {
+
+    arrListeners.push(listener);
+    
+}
